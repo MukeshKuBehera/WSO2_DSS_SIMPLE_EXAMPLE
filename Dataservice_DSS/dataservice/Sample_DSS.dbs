@@ -1,0 +1,94 @@
+<data transports="http https" serviceGroup="Sample_DSS"
+	serviceNamespace="" name="Sample_DSS">
+	<description />
+	<config id="test" enableOData="true">
+		<property name="driverClassName">com.mysql.jdbc.Driver</property>
+		<property name="url">jdbc:mysql://localhost:3306/test</property>
+		<property name="username">root</property>
+		<property name="password">root</property>
+	</config>
+	<!-- inserting data into student -->
+	<query id="InsertStudent" keyColumns="ID"
+		returnGeneratedKeys="true" useConfig="test">
+		<sql>INSERT INTO STUDENT_DETAILS(ID,NAME,DEPT) VALUES(:ID,:NAME,
+			:DEPT)
+		</sql>
+		<result useColumnNumbers="true" element="GeneratedKey"
+			rowName="ID">
+			<element name="ID" column="1" xsdType="string" />
+		</result>
+		<param name="ID" sqlType="INTEGER" />
+		<param name="NAME" sqlType="STRING" />
+		<param name="DEPT" sqlType="STRING" />
+	</query>
+
+	<resource path="/insert" method="POST">
+		<description />
+		<call-query href="InsertStudent">
+			<with-param name="ID" query-param="ID" />
+			<with-param name="NAME" query-param="NAME" />
+			<with-param name="DEPT" query-param="DEPT" />
+		</call-query>
+	</resource>
+	<!-- updating data in student table -->
+	<query id="UpdateStudent" keyColumns="ID"
+		returnGeneratedKeys="true" useConfig="test">
+		<sql>UPDATE STUDENT_DETAILS
+			SET NAME = :NAME, DEPT = :DEPT
+			WHERE ID =
+			:ID
+		</sql>
+		<result useColumnNumbers="true" element="GeneratedKey"
+			rowName="ID">
+			<element name="ID" column="1" xsdType="integer" />
+		</result>
+		<param name="ID" sqlType="INTEGER" />
+		<param name="NAME" sqlType="STRING" />
+		<param name="DEPT" sqlType="STRING" />
+	</query>
+	<resource path="/update" method="PUT">
+		<description />
+		<call-query href="UpdateStudent">
+			<with-param name="ID" query-param="ID" />
+			<with-param name="NAME" query-param="NAME" />
+			<with-param name="DEPT" query-param="DEPT" />
+		</call-query>
+	</resource>
+	<!-- delete student data by id -->
+
+	<query id="DeleteStudent" keyColumns="ID"
+		returnGeneratedKeys="true" useConfig="test">
+		<sql>DELETE FROM STUDENT_DETAILS WHERE ID = :ID
+		</sql>
+		<!-- <result useColumnNumbers="true" element="GeneratedKey" rowName="ID">
+			<element name="ID" column="1" xsdType="integer" />
+		</result> -->
+		<param name="ID" sqlType="INTEGER" />
+	</query>
+	<resource path="/delete" method="DELETE">
+		<description />
+		<call-query href="DeleteStudent">
+			<with-param name="ID" query-param="ID" />
+
+		</call-query>
+	</resource>
+	
+	<!-- get all data from student table -->
+	
+	 <query id="GetStudent" useConfig="test">
+    <sql>SELECT ID, NAME, DEPT FROM STUDENT_DETAILS WHERE ID=:ID</sql>
+    <param name="ID" sqlType="INTEGER" />
+    <result element="generatedKey" rowName="ID">
+      <element name="ID" column="ID" xsdType="integer" />
+      <element name="Name" column="NAME" xsdType="string" />
+      <element name="DEPT" column="DEPT" xsdType="string" />
+    </result>
+  </query>
+  
+   <resource path="/select" method="POST">
+    <description />
+    <call-query href="GetStudent">
+      <with-param name="ID" query-param="ID" />
+    </call-query>
+  </resource> 
+</data>
